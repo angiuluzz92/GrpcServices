@@ -1,0 +1,56 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "TestGRpc";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+package alarm;
+
+// The greeting service definition.
+service Alarmer {
+  // Sends
+  rpc GetAlarmList (AlarmListRequest) returns (stream AlarmList);
+
+  rpc GetStreamAlarmList (AlarmListRequest) returns (stream AlarmProto);
+  }
+
+message HelloRequestP {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReplyP {
+  string message = 1;
+}
+
+
+message AlarmListRequest{
+	int32 test =1;
+}
+  // The request message containing the user's name.
+message AlarmList {
+  repeated AlarmProto Alarms = 1;
+}
+
+message AlarmProto {
+	bool Ack = 1;
+	google.protobuf.Timestamp AckDate = 2;
+	string AckUser = 3;
+	bool Active = 4;
+	int32 Count = 5;
+	string Description = 6;
+	google.protobuf.Timestamp EndDate = 7;
+	string Flag = 8;
+	int32 Gravity = 9;
+	string GroupDescription = 10;
+	int32 GroupId = 11;
+	int32 Id = 12;
+	string Info = 13;
+	bool PreAck = 14;
+	google.protobuf.Timestamp PreAckDate = 15;
+	string PreAckUser = 16;
+	int32 ReportId = 17;
+	google.protobuf.Timestamp StartDate = 18;
+	int32 Type = 19;
+	int32 VariableId = 20;
+	string VariableStatusDescription = 21;
+}

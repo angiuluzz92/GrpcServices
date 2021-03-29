@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+option csharp_namespace = "TestGRpc";
+import "google/protobuf/empty.proto";
+package greet;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+
+  rpc SaySurname (SurnameRequest) returns (SurnameReply);
+
+  rpc SavePersona (PersonaRequest) returns (PersonaReply);
+
+  rpc GetDipendente(DipendenteRequest) returns (DipendenteReply);
+
+  rpc GetAllDipendenti(google.protobuf.Empty) returns (stream DipendenteReply);
+
+  rpc GetAllDipendentiList(DipendenteRequest) returns (DipendentiReply);
+}
+
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+
+message SurnameReply {
+  string messageSurname = 1;
+}
+
+message SurnameRequest{
+	string surname = 1;
+}
+
+
+message PersonaReply{
+	string result = 1;
+}
+
+message PersonaRequest{
+	string name = 1;
+	string surname = 2;
+	int32 age = 3;
+	bool uomo = 4;
+}
+
+message DipendenteReply{
+	string Comune = 1;
+	string Nominativo =2;
+}
+
+message DipendenteRequest{
+	int32 Ok=1;
+}
+
+message DipendentiReply{
+	repeated DipendenteReply ListaDipendenti = 1;
+}
