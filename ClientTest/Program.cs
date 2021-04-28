@@ -3,6 +3,7 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TestGRpc;
 
@@ -60,6 +61,9 @@ namespace ClientTest
                     case "exit":
                         keepLooping = false;
                         break;
+                    case "calcola":
+                        CalculateTest();
+                        break;
                     default:
                         break;
                 }
@@ -70,14 +74,57 @@ namespace ClientTest
             Console.ReadKey();
         }
 
+        public static async void CalculateTest()
+        {
+            //BidirectionalCalculatorServiceClient bidirectionalClient = new BidirectionalCalculatorServiceClient(channel);
+            using (var duplexStream = service.Calculate())
+            {
+                var callbackHandler = new CallbackHandler(duplexStream.ResponseStream);
+
+                await Task.Delay(3000);
+                await duplexStream.RequestStream.WriteAsync(new BidirectionalCalculatorRequest()
+                {
+                    Operation = Operation.Add,
+                    N = 2
+                });
+
+                await Task.Delay(3000);
+                await duplexStream.RequestStream.WriteAsync(new BidirectionalCalculatorRequest()
+                {
+                    Operation = Operation.Multiply,
+                    N = 2
+                });
+
+                await Task.Delay(3000);
+                await duplexStream.RequestStream.WriteAsync(new BidirectionalCalculatorRequest()
+                {
+                    Operation = Operation.Subtract,
+                    N = 2
+                });
+
+                await Task.Delay(3000);
+                await duplexStream.RequestStream.WriteAsync(new BidirectionalCalculatorRequest()
+                {
+                    Operation = Operation.Clear
+                });
+
+                await Task.Delay(3000);
+                await duplexStream.RequestStream.WriteAsync(new BidirectionalCalculatorRequest()
+                {
+                    Operation = Operation.Add,
+                    N = 10
+                });
+
+                await Task.Delay(3000);
+                await duplexStream.RequestStream.CompleteAsync();
+                await callbackHandler.Task;
+            }
+        }
+
 
         public static async void EventFileExistsAsync()
         {
-            using var streamF = serviceAction.AddEventFileExists(e);
-            //while (streamF.ResponseStream.Current == null || streamF.ResponseStream.Current.Risultato == "KO")
-            //{
-            //    //Console.WriteLine("File esiste");
-            //}
+            using var streamF = serviceAction.AddEventFileExists(e);  
             var lstResponse = streamF.ResponseStream.ReadAllAsync();
             await foreach (var r in lstResponse)
             {
@@ -139,6 +186,29 @@ namespace ClientTest
             foreach (var dip in drList.ListaDipendenti)
             {
                 Console.WriteLine(dip.Comune + " " + dip.Nominativo);
+            }
+        }
+
+        internal class CallbackHandler
+        {
+            readonly IAsyncStreamReader<BidirectionalCalculatorReply> _responseStream;
+            readonly CancellationToken _cancellationToken;
+
+            public CallbackHandler(IAsyncStreamReader<BidirectionalCalculatorReply> responseStream) : this(responseStream, CancellationToken.None) { }
+
+            public CallbackHandler(IAsyncStreamReader<BidirectionalCalculatorReply> responseStream, CancellationToken cancellationToken)
+            {
+                _responseStream = responseStream ?? throw new ArgumentNullException(nameof(responseStream));
+                _cancellationToken = cancellationToken;
+                Task = Task.Run(Consume, _cancellationToken);
+            }
+
+            public Task Task { get; }
+
+            async Task Consume()
+            {
+                while (await _responseStream.MoveNext(_cancellationToken).ConfigureAwait(false))
+                    Console.WriteLine("Equals({0}), Equation({1})", _responseStream.Current.Result, _responseStream.Current.Eqn);
             }
         }
 

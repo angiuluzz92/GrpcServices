@@ -8,6 +8,56 @@ namespace TestGRpc
 {
     public class GreeterService : Greeter.GreeterBase
     {
+        public override async Task Calculate(IAsyncStreamReader<BidirectionalCalculatorRequest> requestStream, IServerStreamWriter<BidirectionalCalculatorReply> responseStream, ServerCallContext context)
+        {
+            double result = 0.0D;
+            string equation = result.ToString();
+
+            await foreach (var message in requestStream.ReadAllAsync())
+            {
+                var request = requestStream.Current;
+                double n = request.N;
+                switch (request.Operation)
+                {
+                    case Operation.Add:
+                        result += n;
+                        equation += " + " + n.ToString();
+                        break;
+                    case Operation.Subtract:
+                        result -= n;
+                        equation += " - " + n.ToString();
+                        break;
+                    case Operation.Multiply:
+                        result *= n;
+                        equation += " * " + n.ToString();
+                        break;
+                    case Operation.Divide:
+                        if (n == 0)
+                            throw new RpcException(new Status(StatusCode.InvalidArgument, "Divide by zero attempt."));
+                        result /= n;
+                        equation += " / " + n.ToString();
+                        break;
+                    case Operation.Clear:
+                        equation += " = " + result.ToString();
+                        break;
+                    default:
+                        continue;
+                }
+                await responseStream.WriteAsync(new BidirectionalCalculatorReply()
+                {
+                    Result = result,
+                    Eqn = equation
+                }).ConfigureAwait(false);
+
+                //reset state
+                if (request.Operation == Operation.Clear)
+                {
+                    result = 0.0D;
+                    equation = result.ToString();
+                }
+            }
+        }
+
         private readonly ILogger<GreeterService> _logger;
         public GreeterService(ILogger<GreeterService> logger)
         {

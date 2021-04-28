@@ -1,0 +1,22 @@
+﻿@page "/"
+
+@inject GrpcChannel Channel
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@response
+
+
+@code { 
+    private string response;
+
+            protected override async Task OnInitializedAsync()
+            {
+                var client = new Greeter.GreeterClient(Channel);
+                response = (await client.SayHelloAsync(new HelloRequest { Name = ".NET" })).Message;
+            }
+    }

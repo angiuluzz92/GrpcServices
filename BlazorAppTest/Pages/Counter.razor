@@ -1,0 +1,46 @@
+﻿@page "/counter"
+@inject GrpcChannel Channel
+@using Grpc.Core
+@using Google.Protobuf.WellKnownTypes
+@using System.Threading;
+
+
+<h1>BlazorTable</h1>
+<br />
+
+<Table TableItem="AlarmProto" Items="alarms" PageSize="15" ColumnReorder="true">
+    <Column TableItem="AlarmProto" Title="Id" Field="@(x => x.Id)" Sortable="true" Filterable="true" Width="20%" DefaultSortColumn="true" />
+    <Column TableItem="AlarmProto" Title="Descrizione" Field="@(x => x.Description)" Sortable="true" Filterable="true" Width="30%" />
+    <Column TableItem="AlarmProto" Title="Data inizio" Field="@(x => x.StartDate)" Sortable="true" Filterable="true" Width="30%" />
+    <Column TableItem="AlarmProto" Title="Flag" Field="@(x => x.Flag)" Sortable="true" Filterable="true" Width="20%" />
+    <DetailTemplate TableItem="AlarmProto" Context="context2">
+        <Table TableItem="AlarmProto" Items="alarms" PageSize="15" ColumnReorder="true" style="background-color: white;">
+            <Column TableItem="AlarmProto" Title="Id" Field="@(x => x.Id)" Sortable="true" Filterable="true" Width="20%" DefaultSortColumn="true" />
+            <Column TableItem="AlarmProto" Title="Descrizione" Field="@(x => x.Description)" Sortable="true" Filterable="true" Width="30%" />
+            <Column TableItem="AlarmProto" Title="Data Inizio" Field="@(x => x.StartDate)" Sortable="true" Filterable="true" Width="30%" />
+            <Column TableItem="AlarmProto" Title="Flag" Field="@(x => x.Flag)" Sortable="true" Filterable="true" Width="20%" />
+            <Pager ShowPageNumber="true" ShowTotalCount="true" />
+        </Table>
+    </DetailTemplate>
+    <Pager ShowPageNumber="true" ShowTotalCount="true" ShowPageSizes="true" />
+</Table>
+
+@code
+{
+    private List<AlarmProto> alarms = new List<AlarmProto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = new Alarmer.AlarmerClient(Channel);
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(180));
+        using (var stream = client.GetAlarmStream(new Empty()))
+        {
+            while (await stream.ResponseStream.MoveNext(cancellationToken: cts.Token))
+            {
+                Console.WriteLine("Aggiunto: " + stream.ResponseStream.Current);
+                alarms.Add(stream?.ResponseStream?.Current);
+                StateHasChanged();
+            }
+        }
+    }
+}

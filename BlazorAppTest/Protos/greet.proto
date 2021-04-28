@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "TestGRpc";
+option csharp_namespace = "BlazorAppTest";
 import "google/protobuf/empty.proto";
 package greet;
 

@@ -1,0 +1,56 @@
+﻿@page "/alarms"
+@inject GrpcChannel Channel
+@using Grpc.Core
+@using Google.Protobuf.WellKnownTypes
+@using System.Threading;
+<h3>Alarms</h3>
+
+@if (alarms == null)
+{
+    <p><em>Loading...</em></p> }
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Valore</th>
+                <th>Descrizione</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var alarm in alarms)
+            {
+                <ContextMenuTrigger MenuId="myMenu">
+                    <tr>
+                        <td>@alarm.Id</td>
+                        <td>@alarm.Name</td>
+                        <td>@alarm.Value</td>
+                        <td>@alarm.Description</td>
+                    </tr>
+                </ContextMenuTrigger>
+            }
+        </tbody>
+    </table>
+    <ContextMenuTrigger MenuId="myMenu">
+        <p>Right-click on me to show the context menu !!</p>
+    </ContextMenuTrigger>
+    <ContextMenu Id="myMenu">
+        <Item>Item 1</Item>
+        <Item>Item 2</Item>
+        <Item Enabled="false">Item 3 (disabled)</Item>
+        <Seperator />
+        <Item>
+            Submenu
+            <SubMenu>
+                <Item>Submenu Item 1</Item>
+                <Item>Submenu Item 2</Item>
+            </SubMenu>
+        </Item>
+    </ContextMenu>
+}
+
+@code {
+
+}

@@ -1,0 +1,27 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "BlazorAppTest";
+import "google/protobuf/empty.proto";
+package Action;
+
+
+// The action service definition.
+service Actioneer {
+	rpc SayAction (ActionRequest) returns (ActionReply);
+
+	rpc IsFileExists (google.protobuf.Empty) returns (FileExistsReply);
+
+	rpc AddEventFileExists (google.protobuf.Empty) returns (stream	FileExistsReply);
+}
+
+message ActionRequest{
+	int32 Azione=1;
+}
+
+message ActionReply{
+	string risultato=1;
+}
+
+message FileExistsReply {
+	string risultato=1;
+}

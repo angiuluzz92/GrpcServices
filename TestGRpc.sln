@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGRpc", "TestGRpc\TestGR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientTest", "ClientTest\ClientTest.csproj", "{F6693EC2-BD84-48B3-86B7-33EDCB6D27BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{16472720-FE32-4559-99FA-D13408EC0C4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{16472720-FE32-4559-99FA-D13408EC0C4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF.Library", "WPF.Library\WPF.Library.csproj", "{D9DB8FB7-FA2B-4A70-BE41-B20000E3D4A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF.Library", "WPF.Library\WPF.Library.csproj", "{D9DB8FB7-FA2B-4A70-BE41-B20000E3D4A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAppTest", "BlazorAppTest\BlazorAppTest.csproj", "{EE774C61-60F0-4E5C-849C-7DBB2FDC3C4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D9DB8FB7-FA2B-4A70-BE41-B20000E3D4A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9DB8FB7-FA2B-4A70-BE41-B20000E3D4A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9DB8FB7-FA2B-4A70-BE41-B20000E3D4A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE774C61-60F0-4E5C-849C-7DBB2FDC3C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE774C61-60F0-4E5C-849C-7DBB2FDC3C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE774C61-60F0-4E5C-849C-7DBB2FDC3C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE774C61-60F0-4E5C-849C-7DBB2FDC3C4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,6 +18,14 @@ namespace TestGRpc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
+
+            services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,12 +37,18 @@ namespace TestGRpc
             }
 
             app.UseRouting();
+            app.UseStaticFiles();
+            app.UseGrpcWeb();
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>();
-                endpoints.MapGrpcService<ActionService>();
-                endpoints.MapGrpcService<AlarmService>();
+                endpoints.MapGrpcService<GreeterService>().EnableGrpcWeb()
+                                                  .RequireCors("AllowAll"); ;
+                endpoints.MapGrpcService<ActionService>().EnableGrpcWeb()
+                                                  .RequireCors("AllowAll"); ;
+                endpoints.MapGrpcService<AlarmService>().EnableGrpcWeb()
+                                                  .RequireCors("AllowAll"); ;
 
                 endpoints.MapGet("/", async context =>
                 {
